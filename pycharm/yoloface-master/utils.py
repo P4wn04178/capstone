@@ -55,6 +55,11 @@ def draw_predict(frame, conf, left, top, right, bottom):
 
     text = '{:.2f}'.format(conf)
 
+    # Gaussain Bluring (Mosaic)
+    face = frame[top:bottom, left:right]
+    face_image = cv2.GaussianBlur(face,(99,99), 30)
+    frame[top:bottom, left:right] = face_image
+
     # Display the label at the top of the bounding box
     label_size, base_line = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
 
