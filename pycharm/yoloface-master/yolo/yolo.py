@@ -15,6 +15,7 @@ import os
 import colorsys
 import numpy as np
 import cv2
+import tensorflow as tf
 
 from yolo.model import eval
 
@@ -32,7 +33,7 @@ class YOLO(object):
         self.anchors_path = args.anchors
         self.class_names = self._get_class()
         self.anchors = self._get_anchors()
-        self.sess = K.get_session()
+        self.sess = tf.compat.v1.keras.backend.get_session()
         self.boxes, self.scores, self.classes = self._generate()
         self.model_image_size = args.img_size
 
@@ -193,7 +194,7 @@ def detect_video(model, video_path=None, output=None):
 
     # the video format and fps
     # video_fourcc = int(vid.get(cv2.CAP_PROP_FOURCC))
-    video_fourcc = cv2.VideoWriter_fourcc('M', 'G', 'P', 'G')
+    video_fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
     video_fps = vid.get(cv2.CAP_PROP_FPS)
 
     # the size of the frames to write

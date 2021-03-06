@@ -1,7 +1,21 @@
 import argparse
+import tensorflow as tf
 
 from yolo.yolo import YOLO, detect_video, detect_img
 
+#####################################################################
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+  try:
+    # Currently, memory growth needs to be the same across GPUs
+    for gpu in gpus:
+      tf.config.experimental.set_memory_growth(gpu, True)
+    logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+  except RuntimeError as e:
+    # Memory growth must be set before GPUs have been initialized
+    print(e)
 
 #####################################################################
 def get_args():
@@ -20,7 +34,7 @@ def get_args():
                         default=(416, 416), help='input image size')
     parser.add_argument('--image', default=False, action="store_true",
                         help='image detection mode')
-    parser.add_argument('--video', type=str, default='samples/subway.mp4',
+    parser.add_argument('--video', type=str, default='',
                         help='path to the video')
     parser.add_argument('--output', type=str, default='outputs/',
                         help='image/video output path')
