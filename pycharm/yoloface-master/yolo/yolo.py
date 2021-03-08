@@ -22,7 +22,7 @@ from yolo.model import eval
 from keras import backend as K
 from keras.models import load_model
 from timeit import default_timer as timer
-from PIL import ImageDraw, Image
+from PIL import ImageDraw, Image, ImageFilter
 
 
 class YOLO(object):
@@ -137,10 +137,15 @@ class YOLO(object):
 
             print(text, (left, top), (right, bottom))
 
+            # face Mosaic
+            cropped_image = image.crop((left, top, right, bottom))
+            blurred_image = cropped_image.filter(ImageFilter.GaussianBlur(radius=10))
+            image.paste(blurred_image, (left, top))
+
             for thk in range(thickness):
                 draw.rectangle(
-                    [left + thk, top + thk, right - thk, bottom - thk],
-                    outline=(51, 178, 255))
+                   [left + thk, top + thk, right - thk, bottom - thk],
+                   outline=(51, 178, 255))
             del draw
 
         end_time = timer()

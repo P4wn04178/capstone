@@ -55,7 +55,7 @@ def draw_predict(frame, conf, left, top, right, bottom):
 
     text = '{:.2f}'.format(conf)
 
-    # Gaussain Bluring (Mosaic)
+    # Gaussain Bluring (Mosaic) CPU
     face = frame[top:bottom, left:right]
     face_image = cv2.GaussianBlur(face,(99,99), 30)
     frame[top:bottom, left:right] = face_image
