@@ -20,3 +20,9 @@
 # P.S.
 
 ## ○ 참고문서
+
+## Acknowledgments
+* [Yolov3 TensorFlow Amazing Implementation](https://github.com/zzh8829/yolov3-tf2)
+* [Deep SORT Repository](https://github.com/nwojke/deep_sort)
+* [Yolo v3 official paper](https://arxiv.org/abs/1804.02767)
+* [Yolov3_deepsort](https://github.com/theAIGuysCode/yolov3_deepsort)
