@@ -135,7 +135,7 @@ def main(_argv):
 
         if crop_img.size > 0:
             except_img[int(roi[1]):int(roi[1] + roi[3]), int(roi[0]):int(roi[0] + roi[2])] = crop_img
-            cv2.imshow('test', except_img)
+            #cv2.imshow('test', except_img)
             crop_img_in = cv2.cvtColor(except_img, cv2.COLOR_BGR2RGB)
             crop_img_in = tf.expand_dims(crop_img_in, 0)
             crop_img_in = transform_images(crop_img_in, FLAGS.size)
@@ -156,19 +156,19 @@ def main(_argv):
         tracker.predict()
         tracker.update(detections)
 
+        #Mosaic others
         if c_detections:
             for c_det in c_detections:
                 for det in detections:
                     cos_sil = sum(det.feature * c_det.feature)
-                    if cos_sil > 0.8:  # 유사도가 0.9 보다 낮으면 모자이크 처리
-                        c_track_id = track.track_id
-                        #blur_image = img[int(det.tlwh[1]):int(det.tlwh[1] + det.tlwh[3]),
-                        #            int(det.tlwh[0]):int(det.tlwh[0] + det.tlwh[2])]
-                        #blur_image = cv2.resize(blur_image, dsize=(0, 0), fx=0.04, fy=0.04)
-                        #blur_image = cv2.resize(blur_image, (int(det.tlwh[2]), int(det.tlwh[3])),
-                        #                       interpolation=cv2.INTER_AREA)
-                        #img[int(det.tlwh[1]):int(det.tlwh[1] + det.tlwh[3]),
-                        #int(det.tlwh[0]):int(det.tlwh[0] + det.tlwh[2])] = blur_image
+                    if cos_sil < 0.8:  # 유사도가 0.9 보다 낮으면 모자이크 처리
+                        blur_image = img[int(det.tlwh[1]):int(det.tlwh[1] + det.tlwh[3]),
+                                    int(det.tlwh[0]):int(det.tlwh[0] + det.tlwh[2])]
+                        blur_image = cv2.resize(blur_image, dsize=(0, 0), fx=0.04, fy=0.04)
+                        blur_image = cv2.resize(blur_image, (int(det.tlwh[2]), int(det.tlwh[3])),
+                                               interpolation=cv2.INTER_AREA)
+                        img[int(det.tlwh[1]):int(det.tlwh[1] + det.tlwh[3]),
+                        int(det.tlwh[0]):int(det.tlwh[0] + det.tlwh[2])] = blur_image
 
         for track in tracker.tracks:
             if not track.is_confirmed() or track.time_since_update > 1:
@@ -182,10 +182,10 @@ def main(_argv):
             cv2.rectangle(img, (int(bbox[0]), int(bbox[1]-30)), (int(bbox[0])+(len(class_name)+len(str(track.track_id)))*17, int(bbox[1])), color, -1)
             cv2.putText(img, class_name + "-" + str(track.track_id),(int(bbox[0]), int(bbox[1]-10)),0, 0.75, (255,255,255),2)
 
-            if(track.track_id == c_track_id):
-                blur_image = img[int(bbox[1]):int(bbox[1] + bbox[3]), int(bbox[0]):int(bbox[0] + bbox[2])]
-                blur_image = cv2.blur(blur_image, (60, 60))
-                img[int(bbox[1]):int(bbox[1] + bbox[3]), int(bbox[0]):int(bbox[0] + bbox[2])] = blur_image
+            #if(track.track_id == c_track_id):
+            #    blur_image = img[int(bbox[1]):int(bbox[1] + bbox[3]), int(bbox[0]):int(bbox[0] + bbox[2])]
+            #    blur_image = cv2.blur(blur_image, (60, 60))
+            #    img[int(bbox[1]):int(bbox[1] + bbox[3]), int(bbox[0]):int(bbox[0] + bbox[2])] = blur_image
 
 
         ### UNCOMMENT BELOW IF YOU WANT CONSTANTLY CHANGING YOLO DETECTIONS TO BE SHOWN ON SCREEN
