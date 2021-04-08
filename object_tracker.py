@@ -45,17 +45,8 @@ def main(_argv):
     tracker = Tracker(metric)
 
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
-    if physical_devices:
-        try:
-            tf.config.experimental.set_virtual_device_configuration(
-                physical_devices[0],
-                [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=2048)])
-        except RuntimeError as e:
-            print(e)
-
-    #physical_devices = tf.config.experimental.list_physical_devices('GPU')
-    #if len(physical_devices) > 0:
-    #    tf.config.experimental.set_memory_growth(physical_devices[0], True)
+    if len(physical_devices) > 0:
+        tf.config.experimental.set_memory_growth(physical_devices[0], True)
     if FLAGS.tiny:
         yolo = YoloV3Tiny(classes=FLAGS.num_classes)
     else:
@@ -124,15 +115,16 @@ def main(_argv):
         indices = preprocessing.non_max_suppression(boxs, classes, nms_max_overlap, scores)
         detections = [detections[i] for i in indices]
 
+
         # SELECT ROI FOR EXCEPT FACE
         key = cv2.waitKey(1) & 0xff
         if key == ord(' ') or (FLAGS.video != 0 and isFirst):
             isFirst = False
             except_img = np.zeros((height, width, 3), np.uint8)
             #cv2.imshow('test', except_img)
-            roi = cv2.selectROI('output', img, False)
-            crop_img = img[int(roi[1]):int(roi[1] + roi[3]), int(roi[0]):int(roi[0] + roi[2])]
-
+            #roi = cv2.selectROI('output', img, False)
+            #crop_img = img[int(roi[1]):int(roi[1] + roi[3]), int(roi[0]):int(roi[0] + roi[2])]
+        """        
         if crop_img.size > 0:
             except_img[int(roi[1]):int(roi[1] + roi[3]), int(roi[0]):int(roi[0] + roi[2])] = crop_img
             #cv2.imshow('test', except_img)
@@ -150,11 +142,7 @@ def main(_argv):
             c_detections = [Detection(bbox, score, class_name, feature) for
                             bbox, score, class_name, feature in
                             zip(c_converted_boxes, c_scores[0], c_names, c_features)]
-
-
-        # Call the tracker
-        tracker.predict()
-        tracker.update(detections)
+        
 
         #Mosaic others
         if c_detections:
@@ -169,6 +157,11 @@ def main(_argv):
                                                interpolation=cv2.INTER_AREA)
                         img[int(det.tlwh[1]):int(det.tlwh[1] + det.tlwh[3]),
                         int(det.tlwh[0]):int(det.tlwh[0] + det.tlwh[2])] = blur_image
+        """
+
+        # Call the tracker
+        tracker.predict()
+        tracker.update(detections)
 
         for track in tracker.tracks:
             if not track.is_confirmed() or track.time_since_update > 1:
@@ -178,7 +171,7 @@ def main(_argv):
             class_name = track.get_class()
             color = colors[int(track.track_id) % len(colors)]
             color = [i * 255 for i in color]
-            #cv2.rectangle(img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), color, 2)
+            cv2.rectangle(img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), color, 2)
             cv2.rectangle(img, (int(bbox[0]), int(bbox[1]-30)), (int(bbox[0])+(len(class_name)+len(str(track.track_id)))*17, int(bbox[1])), color, -1)
             cv2.putText(img, class_name + "-" + str(track.track_id),(int(bbox[0]), int(bbox[1]-10)),0, 0.75, (255,255,255),2)
 
