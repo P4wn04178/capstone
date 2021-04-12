@@ -55,11 +55,6 @@ python object_tracker.py --video ./data/video/test.mp4 --output ./data/video/res
 # yolov3 on webcam 
 python object_tracker.py --video 0 --output ./data/video/results.avi
 
-# yolov3-tiny 
-python object_tracker.py --video ./data/video/test.mp4 --output ./data/video/results.avi --weights ./weights/yolov3-tiny.tf --tiny
-
-# yolov3-custom (add --tiny flag if your custom weights were trained for tiny model)
-python object_tracker.py --video ./data/video/test.mp4 --output ./data/video/results.avi --weights ./weights/yolov3-custom.tf --num_classes <# CLASSES> --classes  ./data/labels/<YOUR CUSTOM .names FILE>
 ```
 
 # 5. 정리
