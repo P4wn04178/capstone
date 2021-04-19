@@ -1,4 +1,6 @@
-import time, random
+import time, sys
+from tkinter import *
+from tkinter import simpledialog
 import numpy as np
 from absl import app, flags, logging
 from absl.flags import FLAGS
@@ -16,7 +18,7 @@ from deep_sort import nn_matching
 from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 from tools import generate_detections as gdet
-from PIL import Image, ImageFilter
+from PIL import Image
 from scipy.ndimage.filters import uniform_filter
 
 flags.DEFINE_string('classes', './data/labels/coco.names', 'path to classes file')
@@ -24,14 +26,17 @@ flags.DEFINE_string('weights', './weights/yolov3-custom.tf',
                     'path to weights file')
 flags.DEFINE_boolean('tiny', False, 'yolov3 or yolov3-tiny')
 flags.DEFINE_integer('size', 416, 'resize images to')
-flags.DEFINE_string('video', './data/video/y2.mp4',
+flags.DEFINE_string('video', './data/video/test.mp4',
                     'path to video file or number for webcam)')
 flags.DEFINE_string('output', './data/video/result.mp4', 'path to output video')
 flags.DEFINE_string('output_format', 'XVID', 'codec used in VideoWriter when saving video to file')
 flags.DEFINE_integer('num_classes', 1, 'number of classes in the model')
 
+parent = Tk()
+parent.withdraw()
 
 def main(_argv):
+    isFirst = True
     except_tracker_id = 0 # Init except tracker id
 
     # Definition of the parameters
@@ -122,7 +127,9 @@ def main(_argv):
 
         # SELECT id for except face
         key = cv2.waitKey(1) & 0xff
-        if key == ord(' '):
+        if key == ord(' ') or isFirst == True:
+            isFirst = False
+
             for track in tracker.tracks:
                 bbox = track.to_tlbr()
                 class_name = track.get_class()
@@ -135,7 +142,8 @@ def main(_argv):
                             (255, 255, 255), 2)
             cv2.imshow('output', img)
             cv2.waitKey(1)
-            except_tracker_id = int(input())
+
+            except_tracker_id = simpledialog.askinteger("", "input ID", minvalue=1, maxvalue=50, parent=parent)
 
         for track in tracker.tracks:
             if not track.is_confirmed() or track.time_since_update > 1:
