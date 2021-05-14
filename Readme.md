@@ -58,8 +58,8 @@ python object_tracker.py --video 0 --output ./data/video/results.avi
 ```
 
 #### 사용 예시
-<img src="./data/helpers/base.gif" width="500px" height="280px">
-<img src="./data/helpers/deepsort.gif" width="500px" height="280px">
+적용 전 : <img src="./data/helpers/base.gif" width="500px" height="280px"><br>
+적용 후 : <img src="./data/helpers/deepsort.gif" width="500px" height="280px">
 
 
 ***** 
