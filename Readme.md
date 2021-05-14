@@ -57,6 +57,12 @@ python object_tracker.py --video 0 --output ./data/video/results.avi
 
 ```
 
+#### 사용 예시
+![Demo of Object Tracker](data/helpers/base.gif)
+
+![Demo of Object Tracker](data/helpers/deepsort.gif)
+
+
 ***** 
 
 ## ○ 참고문서
